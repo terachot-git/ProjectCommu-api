@@ -15,8 +15,8 @@ export const getCommunity = async (req, res, next) => {
         
         let memberrole = 'GUEST';
         let member=null
-        if (!!req.user) {
-        const { id } = req.user;
+        if (!!req.user && commuinfo) {
+         const { id } = req.user;
          const memberinfo =  await getMemberInfo(id,commuinfo.id)
          const {role,joinedAt,updatedAt,userId,communityId,user,...userdata} = memberinfo
          memberrole = memberinfo.role
