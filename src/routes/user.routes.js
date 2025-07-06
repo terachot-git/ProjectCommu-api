@@ -1,8 +1,11 @@
 import express from "express";
 import { authCheck } from "../middlewares/auth.middleware.js";
 import * as userController from "../controllers/user.controllers.js"
-import upload from "../middlewares/upload.middleware.js";
+import   { createCommunityUpload, singleUpload } from "../middlewares/upload.middleware.js";
+ "../middlewares/upload.middleware.js";
 const userRoute = express.Router()
 userRoute.get("/me",authCheck,userController.getMe)
-userRoute.patch("/me",authCheck,upload.single('image'),userController.updateProfile)
+userRoute.patch("/me",authCheck,singleUpload,userController.updateProfile)
+userRoute.get("/community",authCheck,userController.getAllCommunity)
+userRoute.post("/community",authCheck,createCommunityUpload,userController.createCommunity)
 export default userRoute

@@ -15,10 +15,45 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  username String @unique 
-  password      String
-  profileImage  String?
-  createdAt     DateTime      @default(now()) @db.Timestamp(0)
-  updatedAt     DateTime      @updatedAt @db.Timestamp(0)
+  id              Int               @id @default(autoincrement())
+  username        String            @unique
+  password        String
+  profileImage    String?
+  createdAt       DateTime          @default(now()) @db.Timestamp(0)
+  updatedAt       DateTime          @updatedAt @db.Timestamp(0)
+  CommunityMember CommunityMember[]
+}
+
+model Community {
+  id              Int               @id @default(autoincrement())
+  communityname   String            @unique
+  communitydetail String?
+  communityIcon   String?
+  communityBanner String?
+  membersname     String
+  membersImage    String?
+  createdAt       DateTime          @default(now()) @db.Timestamp(0)
+  updatedAt       DateTime          @updatedAt @db.Timestamp(0)
+  CommunityMember CommunityMember[]
+}
+
+model CommunityMember {
+  role        Role     @default(MEMBER)
+  membername  String?
+  memberImage String?
+  joinOrder   Int 
+  joinedAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt @db.Timestamp(0)
+  userId      Int
+  communityId Int
+  user      User      @relation(fields: [userId], references: [id])
+  community Community @relation(fields: [communityId], references: [id])
+
+  @@id([userId, communityId])
+}
+
+enum Role {
+  ADMIN
+  MODERATOR
+  MEMBER
 }

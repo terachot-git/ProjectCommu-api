@@ -10,6 +10,14 @@ export const loginSchema = object({
 	username: string().required(),
 	password: string().min(6).required(),
 })
+export const createCommuSchema = object({
+	communityname: string().required().min(3).max(25),
+	commudetail: string(),
+	membersname:string().required().min(3).max(25),
+})
+
+
+
 
 export const validate = (schema, options = {}) => {
 	return async function (req, res, next) {

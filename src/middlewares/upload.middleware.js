@@ -2,7 +2,7 @@ import multer from 'multer'
 import path from 'path'
 
 const dest = path.join(process.cwd(),'tmp-pic')
-console.log(dest)
+// console.log(dest)
 const storage = multer.diskStorage({
 	destination : (req, file, cb) => cb(null, dest),
 	filename : (req, file, cb) => {
@@ -14,4 +14,10 @@ const storage = multer.diskStorage({
 
 )
 
-export default multer({storage})
+export const singleUpload = multer({storage}).single('image')
+
+export const createCommunityUpload = multer({storage}).fields([
+    { name: 'communityIcon', maxCount: 1 },
+    { name: 'communityBanner', maxCount: 1 }, 
+	{ name: 'membersImage', maxCount: 1 },
+])
