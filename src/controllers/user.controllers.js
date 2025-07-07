@@ -82,7 +82,7 @@ export const createCommunity = async (req, res, next) => {
 				communityIcon: iconResult?.secure_url,
 				communityBanner: bannerResult?.secure_url,
 				membersname: membersname,
-				membersImage: memberImageResult?.memberImageResult
+				membersImage: memberImageResult?.secure_url
 			}
 		});
 
