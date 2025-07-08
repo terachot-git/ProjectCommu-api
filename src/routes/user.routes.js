@@ -8,4 +8,6 @@ userRoute.get("/me",authCheck,userController.getMe)
 userRoute.patch("/me",authCheck,singleUpload,userController.updateProfile)
 userRoute.get("/community",authCheck,userController.getAllCommunity)
 userRoute.post("/community",authCheck,createCommunityUpload,userController.createCommunity)
+userRoute.post("/community/:communityname",authCheck,userController.joinCommunity)
+userRoute.delete("/community/:communityname",authCheck,userController.leaveCommunity)
 export default userRoute

@@ -1,6 +1,7 @@
 import cloudinary from '../config/cloudinary.config.js';
 import prisma from '../config/prisma.config.js';
 import { getCommunityByUser, getUserBy } from '../services/user.service.js';
+import { getCommunityBy } from '../services/community.service.js';
 import createError from '../utils/create.error.util.js'
 import fs from 'fs/promises'
 import path from 'path'
@@ -106,15 +107,79 @@ export const createCommunity = async (req, res, next) => {
 }
 
 export const getAllCommunity = async (req, res, next) => {
-    try {
-       {
-        const { id } = req.user;
-        const commuinfo = await getCommunityByUser(id)
-		res.status(200).json({
-		commu: commuinfo
-	})
-       }
-    } catch (error) {
-        next(error);
-    }
+	try {
+		{
+			const { id } = req.user;
+			const commuinfo = await getCommunityByUser(id)
+			res.status(200).json({
+				commu: commuinfo
+			})
+		}
+	} catch (error) {
+		next(error);
+	}
 }
+
+export const joinCommunity = async (req, res, next) => {
+
+	try {
+		{
+			const { id } = req.user;
+			const communityName = req.params.communityname
+			const commuinfo = await getCommunityBy('communityname', communityName)
+
+			if (!commuinfo) {
+				return res.status(404).json({ message: "Community not found" });
+			}
+			const lastMember = await prisma.communityMember.findFirst({
+				where: {
+					communityId: commuinfo.id,
+				},
+				orderBy: {
+					joinOrder: 'desc'
+				},
+			});
+			const maxJoinOrder = lastMember ? lastMember.joinOrder : 0;
+			const newJoinOrder = maxJoinOrder + 1;
+		
+		
+			const data = await prisma.communityMember.create({
+				data: {
+					userId: id,
+					joinOrder: newJoinOrder,
+					communityId: commuinfo.id
+				}
+			});
+
+			res.status(201).json({ newmember: data });
+		}
+	} catch (error) {
+		next(error);
+	}
+}
+
+export const leaveCommunity = async (req, res, next) => {
+	try {
+		const { id } = req.user;
+		const communityName = req.params.communityname
+		const commuinfo = await getCommunityBy('communityname', communityName)
+
+		if (!commuinfo) {
+			return res.status(404).json({ message: "Community not found" });
+		}
+
+		await prisma.communityMember.delete({
+			where: {
+				userId_communityId: {
+					userId: id,
+					communityId: commuinfo.id,
+				},
+			},
+		});
+
+		res.status(200).json({ message: 'Successfully left the community.' });
+
+	} catch (error) {
+		next(error);
+	}
+};
