@@ -10,17 +10,7 @@ export const createCommunity = async (Data) => {
     return await prisma.community.create({ data: Data })
 }
 
-export const getmembersInCommu = async (id) => {
-    return await prisma.communityMember.findMany({
-        where: {
-            communityId: id,
-        },
-        include: {
-            user: true,
 
-        },
-    });
-}
 
 export const createMembers = async (Data) => {
     return await prisma.communityMember.create({ data: Data })

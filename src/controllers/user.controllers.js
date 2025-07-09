@@ -5,6 +5,7 @@ import { getCommunityBy } from '../services/community.service.js';
 import createError from '../utils/create.error.util.js'
 import fs from 'fs/promises'
 import path from 'path'
+import { deleteMember } from '../services/mod.service.js';
 export const getMe = async (req, res, next) => {
 	try {
 		const { id } = req.user;
@@ -168,15 +169,15 @@ export const leaveCommunity = async (req, res, next) => {
 			return res.status(404).json({ message: "Community not found" });
 		}
 
-		await prisma.communityMember.delete({
-			where: {
-				userId_communityId: {
-					userId: id,
-					communityId: commuinfo.id,
-				},
-			},
-		});
-
+		// await prisma.communityMember.delete({
+		// 	where: {
+		// 		userId_communityId: {
+		// 			userId: id,
+		// 			communityId: commuinfo.id,
+		// 		},
+		// 	},
+		// });
+       await deleteMember(id,commuinfo.id)
 		res.status(200).json({ message: 'Successfully left the community.' });
 
 	} catch (error) {

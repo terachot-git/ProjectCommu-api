@@ -6,6 +6,7 @@ import errorMiddleware from './middlewares/error.middleware.js'
 import notfoundMiddleware from './middlewares/notfound.middleware.js'
 import userRoute from './routes/user.routes.js'
 import communityRoute from './routes/community.routes.js'
+import modRoute from './routes/mod.routes.js'
 app.use(cors({
 	origin : 'http://localhost:5173'
 }))
@@ -13,6 +14,7 @@ app.use(express.json())
 app.use("/api/auth",authRoute)
 app.use("/api/user",userRoute)
 app.use("/api/community",communityRoute)
+app.use("/api/mod",modRoute)
 app.use( errorMiddleware )
 app.use( notfoundMiddleware)
 export default app
