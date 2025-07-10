@@ -38,16 +38,17 @@ model Community {
 }
 
 model CommunityMember {
-  role        Role     @default(MEMBER)
+  role        Role      @default(MEMBER)
   membername  String?
   memberImage String?
-  joinOrder   Int 
-  joinedAt    DateTime @default(now())
-  updatedAt   DateTime @updatedAt @db.Timestamp(0)
+  joinOrder   Int
+  joinedAt    DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt @db.Timestamp(0)
   userId      Int
   communityId Int
-  user      User      @relation(fields: [userId], references: [id])
-  community Community @relation(fields: [communityId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id])
+  Post        Post[]
 
   @@id([userId, communityId])
 }
@@ -56,4 +57,22 @@ enum Role {
   ADMIN
   MODERATOR
   MEMBER
+}
+
+enum PostStatus {
+  PENDING
+  APPROVED
+  REMOVED
+}
+
+model Post {
+  id                Int        @id @default(autoincrement())
+  postImg           String?
+  postDeception     String
+  createdAt         DateTime   @default(now()) @db.Timestamp(0)
+  updatedAt         DateTime   @updatedAt @db.Timestamp(0)
+  poststatus        PostStatus @default(PENDING)
+  authorUserId      Int
+  authorCommunityId Int
+  authorMembership CommunityMember @relation(fields: [authorUserId, authorCommunityId], references: [userId, communityId])
 }

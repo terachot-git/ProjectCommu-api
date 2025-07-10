@@ -1,11 +1,12 @@
 import cloudinary from '../config/cloudinary.config.js';
 import prisma from '../config/prisma.config.js';
 import { getCommunityByUser, getUserBy } from '../services/user.service.js';
-import { getCommunityBy } from '../services/community.service.js';
+import { getCommunityBy, getMemberInfo } from '../services/community.service.js';
 import createError from '../utils/create.error.util.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { deleteMember } from '../services/mod.service.js';
+import { createNewpost } from '../services/post.service.js';
 export const getMe = async (req, res, next) => {
 	try {
 		const { id } = req.user;
@@ -142,8 +143,8 @@ export const joinCommunity = async (req, res, next) => {
 			});
 			const maxJoinOrder = lastMember ? lastMember.joinOrder : 0;
 			const newJoinOrder = maxJoinOrder + 1;
-		
-		
+
+
 			const data = await prisma.communityMember.create({
 				data: {
 					userId: id,
@@ -177,10 +178,43 @@ export const leaveCommunity = async (req, res, next) => {
 		// 		},
 		// 	},
 		// });
-       await deleteMember(id,commuinfo.id)
+		await deleteMember(id, commuinfo.id)
 		res.status(200).json({ message: 'Successfully left the community.' });
 
 	} catch (error) {
 		next(error);
 	}
 };
+
+export const createPost = async (req, res, next) => {
+	try {
+		const { id } = req.user;
+		const { postdeception, communityid } = req.body
+		const memberinfo = await getMemberInfo(id, communityid)
+		if (!memberinfo) {
+			createError(403, "User is not a member of this community")
+		}
+		let haveFile = !!req.file
+		let uploadResult = null
+		// if (haveFile) {
+		// 	uploadResult = await cloudinary.uploader.upload(req.file.path, {
+		// 		overwrite: true,
+		// 		public_id: path.parse(req.file.path).name
+		// 	})
+		// 	fs.unlink(req.file.path)
+		// }
+		const data = {
+			postDeception: postdeception,
+			postImg: uploadResult?.secure_url || '',
+			authorUserId: id,
+			authorCommunityId: communityid,
+		}
+        // const result = await createNewpost(data)
+		res.status(201).json({
+		message: 'Update Create Post done',
+		// result: result
+	})
+	} catch (error) {
+		next(error)
+	}
+}
