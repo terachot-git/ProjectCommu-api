@@ -189,30 +189,36 @@ export const leaveCommunity = async (req, res, next) => {
 export const createPost = async (req, res, next) => {
 	try {
 		const { id } = req.user;
-		const { postdeception, communityid } = req.body
+		
+		const { description } = req.body
+		console.log(description)
+		
+		const communityid = Number(req.params.communityid)
+		console.log(communityid)
 		const memberinfo = await getMemberInfo(id, communityid)
+		
 		if (!memberinfo) {
 			createError(403, "User is not a member of this community")
 		}
 		let haveFile = !!req.file
 		let uploadResult = null
-		// if (haveFile) {
-		// 	uploadResult = await cloudinary.uploader.upload(req.file.path, {
-		// 		overwrite: true,
-		// 		public_id: path.parse(req.file.path).name
-		// 	})
-		// 	fs.unlink(req.file.path)
-		// }
+		if (haveFile) {
+			uploadResult = await cloudinary.uploader.upload(req.file.path, {
+				overwrite: true,
+				public_id: path.parse(req.file.path).name
+			})
+			fs.unlink(req.file.path)
+		}
 		const data = {
-			postDeception: postdeception,
+			description: description,
 			postImg: uploadResult?.secure_url || '',
 			authorUserId: id,
 			authorCommunityId: communityid,
 		}
-        // const result = await createNewpost(data)
+        const result = await createNewpost(data)
 		res.status(201).json({
 		message: 'Update Create Post done',
-		// result: result
+		result: result
 	})
 	} catch (error) {
 		next(error)
