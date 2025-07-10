@@ -17,27 +17,27 @@ export const getAllmembersInCommu = async (id) => {
         },
     });
 }
-export const updateMember = async (userid,commuId,newdata) => {
+export const updateMember = async (memberid,commuId,newdata) => {
     return await prisma.communityMember.update({
         where: {
             userId_communityId: { 
-                userId: userid,
+                userId: memberid,
                 communityId: commuId,
             }
             , 
-        data:newdata
+       
         },
-    
+        data:newdata
         },
     )
    
 };
 
-export const deleteMember = async (userid,commuId) => {
+export const deleteMember = async (memberid,commuId) => {
     return await prisma.communityMember.delete({
 			where: {
 				userId_communityId: {
-					userId: userid,
+					userId: memberid,
 					communityId: commuId,
 				},
 			},
