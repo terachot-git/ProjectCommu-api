@@ -66,13 +66,13 @@ enum PostStatus {
 }
 
 model Post {
-  id                Int        @id @default(autoincrement())
+  id                Int             @id @default(autoincrement())
   postImg           String?
-  description     String
-  createdAt         DateTime   @default(now()) @db.Timestamp(0)
-  updatedAt         DateTime   @updatedAt @db.Timestamp(0)
-  poststatus        PostStatus @default(PENDING)
+  description       String
+  createdAt         DateTime        @default(now()) @db.Timestamp(0)
+  updatedAt         DateTime        @updatedAt @db.Timestamp(0)
+  poststatus        PostStatus      @default(PENDING)
   authorUserId      Int
   authorCommunityId Int
-  authorMembership CommunityMember @relation(fields: [authorUserId, authorCommunityId], references: [userId, communityId])
+  authorMembership  CommunityMember @relation(fields: [authorUserId, authorCommunityId], references: [userId, communityId])
 }

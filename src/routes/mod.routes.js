@@ -6,4 +6,5 @@ const modRoute = express.Router()
 modRoute.get("/members/:communityname",authCheck,modcontroller.getAllmembersInCommunity)
 modRoute.delete("/members/:communityname",authCheck,modcontroller.deleteMembersInCommunity)
 modRoute.patch("/members/:communityname",authCheck,modcontroller.updateRoleMembers)
+modRoute.patch("/posts/:communityname",authCheck,modcontroller.updatePostStatus)
 export default modRoute

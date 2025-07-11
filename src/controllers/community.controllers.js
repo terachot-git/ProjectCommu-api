@@ -1,7 +1,7 @@
 import createError from '../utils/create.error.util.js'
 import fs from 'fs/promises'
 import path from 'path'
-import { getCommunityBy, getMemberInfo } from '../services/community.service.js';
+import { getAllPostInCommunity, getCommunityBy, getMemberInfo } from '../services/community.service.js';
 export const getCommunity = async (req, res, next) => {
     try {
         const communityName = req.params.communityname
@@ -34,4 +34,24 @@ export const getCommunity = async (req, res, next) => {
         next(error);
     }
 }
+
+export const getAllPost = async (req, res, next) => {
+    try {
+        const communityname = req.params.communityname
+        const {poststatus} = req.query
+        const checkcommu = await getCommunityBy("communityname",communityname)
+        if (!checkcommu) {
+        createError(404,"Community is not found")
+        }
+        const allpost = await getAllPostInCommunity(Number(checkcommu.id),poststatus)
+     
+       
+        res.json({
+            posts:allpost
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
 

@@ -19,17 +19,50 @@ export const createMembers = async (Data) => {
 export const getMemberInfo = async (userid, commuID) => {
     return await prisma.communityMember.findUnique({
         where: {
-               userId_communityId: { 
+            userId_communityId: {
                 userId: userid,
                 communityId: commuID,
             }
         },
         include: {
-          user: { 
-                select: { 
+            user: {
+                select: {
                     username: true,
                     profileImage: true,
                 }
+            }
+
+        },
+    });
+}
+
+export const getAllPostInCommunity = async (commuID,poststatus) => {
+    return await prisma.post.findMany({
+        where: {
+             authorCommunityId: commuID, 
+             poststatus:poststatus
+        },
+        include: {
+            authorMembership: {
+                include: {
+                    user: {
+                        select: {
+                            username: true,
+                            id: true,
+                            profileImage: true,
+                        }
+                    },
+                    community:{
+                         select: {
+                            communityname: true,
+                            id: true,
+                            communityIcon: true,
+                            membersname:true,
+                            membersImage:true
+                        } 
+                    }
+                }
+
             }
 
         },
