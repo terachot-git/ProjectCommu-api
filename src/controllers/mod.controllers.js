@@ -74,7 +74,7 @@ export const updatePostStatus = async (req,res,next) => {
       
      const memberinfo = await getMemberInfo(id, commuinfo.id)
      
-    if(!memberinfo||memberinfo?.role!="ADMIN")
+    if(!memberinfo||(memberinfo?.role!="ADMIN"&&memberinfo?.role!="MODERATOR"))
     {
         createError(403,"Your Role cannot accese")
     }

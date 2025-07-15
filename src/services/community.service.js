@@ -68,3 +68,19 @@ export const getAllPostInCommunity = async (commuID,poststatus) => {
         },
     });
 }
+export const searchcommunity = async (query) =>{
+
+return await prisma.community.findMany({
+      where: {
+        communityname: {
+          contains: query
+        },
+      },
+      take: 15,
+      select: {
+        id: true,
+        communityname: true,
+        communityIcon: true,
+      },
+    });
+}

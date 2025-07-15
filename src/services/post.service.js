@@ -7,3 +7,9 @@ export const createNewpost = async (data) => {
 export const updatePost = async (postid,data) => {
 	return await prisma.post.update({where:{id:postid}, data: data })
 }
+export const servicedeletePost = async (postid) => {
+	return await prisma.post.delete({where:{id:postid}})
+}
+export const getPost = async (postid) => {
+	return await prisma.post.findUnique({where:{id:postid}})
+}

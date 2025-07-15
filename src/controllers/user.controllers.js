@@ -6,7 +6,7 @@ import createError from '../utils/create.error.util.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { deleteMember } from '../services/mod.service.js';
-import { createNewpost } from '../services/post.service.js';
+import { createNewpost, getPost, servicedeletePost } from '../services/post.service.js';
 export const getMe = async (req, res, next) => {
 	try {
 		const { id } = req.user;
@@ -247,4 +247,19 @@ export const getAllpostForHome = async (req, res, next) => {
 		next(error)
 	}
 
+}
+export const deletePost = async  (req,res,next) => {
+	const { id:userid } = req.user;
+	console.log("hello",userid)
+	const {postid} = req.body
+	// console.log(postid)
+    const exitpost  = await getPost(Number(postid))
+	if (exitpost?.authorUserId != Number(userid))
+	{
+		console.log("Test")
+	return	res.status(403).json({message:"Cannot Delest post"})
+	}
+	const delres =  await servicedeletePost(postid)
+	// console.log(delres)
+	res.json({message:delres})
 }

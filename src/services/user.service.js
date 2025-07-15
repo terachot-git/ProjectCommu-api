@@ -61,5 +61,3 @@ export const servicegetAllpostForhomePage = async (communityIds) => {
     })
 
 }
-
-
