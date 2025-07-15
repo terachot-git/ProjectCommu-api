@@ -74,5 +74,5 @@ model Post {
   poststatus        PostStatus      @default(PENDING)
   authorUserId      Int
   authorCommunityId Int
-  authorMembership  CommunityMember @relation(fields: [authorUserId, authorCommunityId], references: [userId, communityId])
+  authorMembership  CommunityMember @relation(fields: [authorUserId, authorCommunityId], references: [userId, communityId] , onDelete: Cascade) 
 }

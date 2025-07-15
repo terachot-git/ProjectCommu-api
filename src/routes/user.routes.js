@@ -11,5 +11,5 @@ userRoute.post("/community",authCheck,createCommunityUpload,userController.creat
 userRoute.post("/community/:communityname",authCheck,userController.joinCommunity)
 userRoute.delete("/community/:communityname",authCheck,userController.leaveCommunity)
 userRoute.post("/posts/:communityid",authCheck,singleUpload,userController.createPost)
-
+userRoute.get("/posts/community",authCheck,userController.getAllpostForHome)
 export default userRoute

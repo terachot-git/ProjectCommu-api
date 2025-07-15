@@ -1,6 +1,6 @@
 import cloudinary from '../config/cloudinary.config.js';
 import prisma from '../config/prisma.config.js';
-import { getCommunityByUser, getUserBy } from '../services/user.service.js';
+import {  getCommunityByUser, getUserBy, servicegetAllpostForhomePage } from '../services/user.service.js';
 import { getCommunityBy, getMemberInfo } from '../services/community.service.js';
 import createError from '../utils/create.error.util.js'
 import fs from 'fs/promises'
@@ -189,14 +189,14 @@ export const leaveCommunity = async (req, res, next) => {
 export const createPost = async (req, res, next) => {
 	try {
 		const { id } = req.user;
-		
+
 		const { description } = req.body
 		console.log(description)
-		
+
 		const communityid = Number(req.params.communityid)
 		console.log(communityid)
 		const memberinfo = await getMemberInfo(id, communityid)
-		
+
 		if (!memberinfo) {
 			createError(403, "User is not a member of this community")
 		}
@@ -215,12 +215,36 @@ export const createPost = async (req, res, next) => {
 			authorUserId: id,
 			authorCommunityId: communityid,
 		}
-        const result = await createNewpost(data)
+		const result = await createNewpost(data)
 		res.status(201).json({
-		message: 'Update Create Post done',
-		result: result
-	})
+			message: 'Update Create Post done',
+			result: result
+		})
 	} catch (error) {
 		next(error)
 	}
+}
+
+export const getAllpostForHome = async (req, res, next) => {
+	try {
+		const { id } = req.user;
+		const commuinfo = await getCommunityByUser(id)
+		console.log(id)
+		if (commuinfo.length === 0) {
+		res.status(200).json({
+			commu: commuinfo,
+			message:"User นี้ไม่ได้เป็นสมาชิกของ Community ใดๆ"
+		})
+		}
+		const communityIds = commuinfo.map(el => el.community.id);
+		
+		const allposts  =  await servicegetAllpostForhomePage(communityIds)
+		 res.status(200).json({
+			posts: allposts
+		})
+		
+	} catch (error) {
+		next(error)
+	}
+
 }
